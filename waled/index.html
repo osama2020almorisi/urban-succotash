@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اكسسوارات </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #d63384;
+        }
+
+        .search-bar {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .search-bar input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .folder-gallery, .product-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        .folder-item, .product-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .folder-item:hover, .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-item img, .folder-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-item p, .folder-item p {
+            margin: 10px 0;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-price {
+            color: #d63384;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+        }
+
+        #backButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #d63384;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+        }
+
+        .product-details {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .product-details img {
+            max-width: 300px;
+            margin: 10px;
+        }
+
+        .product-details .carousel img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .active-image {
+            border: 2px solid #d63384;
+        }
+    </style>
+</head>
+<body>
+    <h1>اكسسوارات عياش</h1>
+
+    <!-- شريط البحث -->
+    <div class="search-bar">
+        <input type="text" id="searchBox" oninput="searchFolders()" placeholder="ابحث هنا...">
+    </div>
+
+    <!-- عرض المجلدات -->
+    <div id="folderGallery" class="folder-gallery">
+        <div class="folder-item" onclick="showProducts('الاكسسوارات')">
+            <img src="ak/os.jpg" alt="الاكسسوارات">
+            <p>الاكسسوارات</p>
+        </div>
+        <div class="folder-item" onclick="showProducts('المكياج')">
+            <img src="mk/mk.jpg" alt="المكياج">
+            <p>المكياج</p>
+        </div>
+        <div class="folder-item" onclick="showProducts('الساعات')">
+            <img src="sa/sa.jpg" alt="الساعات">
+            <p>الساعات</p>
+        </div>
+        <div class="folder-item" onclick="showProducts('الحقائب')">
+            <img src="kh/kh.jpg" alt="الحقائب">
+            <p>الحقائب</p>
+        </div>
+        <div class="folder-item" onclick="showProducts('المجوهرات')">
+            <img src="mg/mg.jpeg" alt="المجوهرات">
+            <p>المجوهرات</p>
+        </div>
+    </div>
+
+    <!-- عرض المنتجات -->
+    <div id="productGallery" class="product-gallery" style="display: none;"></div>
+
+    <!-- تفاصيل المنتج -->
+    <div id="productDetails" class="product-details"></div>
+
+    
+
+    <!-- زر العودة -->
+    <button id="backButton" onclick="showFolders()">رجوع</button>
+
+    <footer>
+        
+        <p>© 2024 Osama Al_Murisi متجر الإكسسوارات النسائية. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script>
+        const products = {
+            "الاكسسوارات": [
+                { name: "قلادة فاخرة", price: "500.00 ريال", image: ["ak/montaj/1.png", "ak/montaj/2.jpg"] },
+                { name: "حلق ماسي", price: "300.00 ريال", image: ["ak/montaj/3.jpg", "ak/montaj/4.jpg"] },
+                { name: "إسوارة ذهبية", price: "800.00 ريال", image: ["ak/montaj/3.jpg", "ak/montaj/4.jpg"] }
+            ],
+            "المكياج": [
+                { name: "أحمر شفاه", price: "50.00 ريال", image: ["mk/montaj/1.png", "mk/montaj/2.jpg"] },
+                { name: "ماسكارا فاخرة", price: "150.00 ريال", image: ["mk/montaj/3.jpg", "mk/montaj/4.jpg"] },
+                { name: "علبة ظلال عيون", price: "200.00 ريال", image: ["mk/montaj/2.jpg", "mk/montaj/3.jpg"]  },
+            ],
+                     
+            "الساعات": [
+                { name: "ساعة ذهبية", price: "1500.00 ريال", image: ["sa/montaj/1.jpg", "sa/montaj/2.jpeg"] },
+                { name: "ساعة ذهبية", price: "1500.00 ريال", image: ["sa/montaj/2.jpeg", "sa/montaj/2.jpeg"] },
+                { name: "ساعة كلاسيكية", price: "1000.00 ريال", image: ["sa/montaj/3.jpg", "sa/montaj/2.jpeg"] }
+            ],
+            "الحقائب": [
+                { name: "حقيبة جلدية", price: "1200.00 ريال", image: ["sa/montaj/1.jpg", "sa/montaj/2.jpeg"] },
+                { name: "حقيبة يد صغيرة", price: "800.00 ريال", image: ["sa/montaj/1.jpg", "sa/montaj/2.jpeg"] }
+            ],
+            "المجوهرات": [
+                { name: "خاتم ألماسي", price: "2500.00 ريال", image: ["sa/montaj/1.jpg", "sa/montaj/2.jpeg"] },
+                { name: "سلسلة ذهبية", price: "1800.00 ريال", image: ["sa/montaj/1.jpg", "sa/montaj/2.jpeg"] }
+            ]
+        };
+
+        function showFolders() {
+            document.getElementById('folderGallery').style.display = 'grid';
+            document.getElementById('productGallery').style.display = 'none';
+            document.getElementById('productDetails').style.display = 'none';
+            document.getElementById('backButton').style.display = 'none';
+        }
+
+        function showProducts(folder) {
+            const productGallery = document.getElementById('productGallery');
+            productGallery.innerHTML = products[folder].map(product => `
+                <div class="product-item" onclick="showProductDetails('${folder}', '${product.name}')">
+                    <img src="${product.image[0]}" alt="${product.name}">
+                    <p class="product-name">${product.name}</p>
+                    <p class="product-price">${product.price}</p>
+                </div>
+            `).join('');
+            document.getElementById('folderGallery').style.display = 'none';
+            productGallery.style.display = 'grid';
+            document.getElementById('backButton').style.display = 'block';
+        }
+
+        function showProductDetails(folder, name) {
+            const product = products[folder].find(p => p.name === name);
+            const productDetails = document.getElementById('productDetails');
+            productDetails.innerHTML = `
+                <h2>${product.name}</h2>
+                <div class="carousel">${product.image.map(img => `<img src="${img}" onclick="setActiveImage(this)" class="carousel-image">`).join('')}</div>
+                <img src="${product.image[0]}" id="mainImage" class="active-image">
+                <p>${product.price}</p>
+            `;
+            document.getElementById('productGallery').style.display = 'none';
+            productDetails.style.display = 'block';
+        }
+
+        function setActiveImage(img) {
+            document.getElementById('mainImage').src = img.src;
+        }
+
+        function searchFolders() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const folders = document.querySelectorAll('.folder-item');
+            folders.forEach(folder => {
+                const text = folder.textContent.toLowerCase();
+                folder.style.display = text.includes(search) ? 'block' : 'none';
+            });
+        }
+
+        showFolders();
+        function showProductDetails(folder, name) {
+    const product = products[folder].find(p => p.name === name);
+    const productDetails = document.getElementById('productDetails');
+    const messageText = `أريد ${product.name} بسعر ${product.price}`;
+    const whatsappLink = `https://wa.me/967770200970?text=${encodeURIComponent(messageText)}`;
+    const smsLink = `sms:+967770200970?body=${encodeURIComponent(messageText)}`;
+    
+    productDetails.innerHTML = `
+        <h2>${product.name}</h2>
+        <div class="carousel">${product.image.map(img => `<img src="${img}" onclick="setActiveImage(this)" class="carousel-image">`).join('')}</div>
+        <img src="${product.image[0]}" id="mainImage" class="active-image">
+        <p>${product.price}</p>
+        <!-- إضافة الأزرار هنا -->
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="location.href='tel:+967770200970'" style="padding: 10px 20px; margin: 5px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                اتصال
+            </button>
+            <button onclick="location.href='${smsLink}'" style="padding: 10px 20px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                رسالة
+            </button>
+            <button onclick="location.href='${whatsappLink}'" style="padding: 10px 20px; margin: 5px; background-color: #25d366; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                واتساب
+            </button>
+        </div>
+    `;
+    document.getElementById('productGallery').style.display = 'none';
+    productDetails.style.display = 'block';
+}
+
+
+
+
+    </script>
+</body>
+</html>
